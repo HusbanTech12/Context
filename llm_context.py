@@ -1,40 +1,36 @@
-from agents import Agent, Runner , FunctionTool, function_tool
-from httpx import main 
+from agents import Agent, Runner, function_tool
 from config import config
-import asyncio
+import asyncio  # ✅ You need this
 
 @function_tool(
-    name_override= 'Weather Assistant',
-    description_override='Fetch Weather by according given loaction'
+    name_override='weather_assistant',
+    description_override='Fetch Weather by according given location'
 )
-async def fetch_weather(location : str) -> str :
+def fetch_weather(location: str) -> str:
     """
-    Fetch Weather according to given location
-    
-     Args:
-     location: Fetch waether is given location    
-    """
+    Fetch weather according to given location
 
+    Args:
+        location: Fetch weather in the given location    
+    """
     return f"weather in {location} is sunny"
 
-
 agent = Agent(
-
-    name = 'Helpful Assistant',
+    name='Helpful Assistant',
     instructions='You are a Helpful Assistant. Handle User Quiery & Answer easiest way Language.',
     tools=[fetch_weather]
 )
 
-print("Tools >>> " , agent.tools)
-
+# ✅ Wrap it in async def
 async def main():
- result = await Runner.run(
-    agent,
-    input='What is Weather in Karachi?',
-    run_config=config,
-)
+  result = await Runner.run(
+        agent,
+        input='What is Weather in Karachi?',
+        run_config=config,
+    )
+    
+  print(result)
 
- print(result.final_output)
-
+# ✅ Proper async run
 if __name__ == "__main__":
-    asyncio.run(main()) 
+    asyncio.run(main())
